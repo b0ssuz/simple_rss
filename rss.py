@@ -20,6 +20,7 @@ class RSS():
                 self.feeds_with_content.append(item)
 
     def list_headlines(self)->None:
+        print("\033c", end='')
         with open('read_articles.lst', 'r') as f:
             lines = f.readlines()
             read_articles = [lines.strip() for lines in lines]
@@ -37,6 +38,7 @@ class RSS():
             index += 1
 
     def read_article_description(self, index: int)->None:
+        print("\033c", end='')
         print(f"\n--- {index} \n{self.feeds_with_content[index].title.content} \n")
         print(f"{self.feeds_with_content[index].description.content} \n")
 
