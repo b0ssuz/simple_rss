@@ -20,17 +20,16 @@ class RSS():
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
 
-    def get_headlines(self)->list:
+    def get_headlines(self, with_read:bool=True)->list:
         headlines = []
-        for article in self.feeds_with_content:
+        for i,article in enumerate(self.feeds_with_content):
+            if with_read == False and self.is_read(i):
+                continue
             headlines.append(article.title.content)
-        #return dumps(headlines)
         return headlines
 
-    def read_article_description(self, index: int)->None:
-        print("\033c", end='')
-        print(f"\n--- {index} \n{self.feeds_with_content[index].title.content} \n")
-        print(f"{self.feeds_with_content[index].description.content} \n")
+    def get_description(self, index: int)->str:
+        return self.feeds_with_content[index].description.content
 
     def get_article_url(self, index: int)->str:
         return self.feeds_with_content[index].link.content
