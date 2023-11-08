@@ -34,7 +34,6 @@ def main(stdscr):
             stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}")
             stdscr.refresh()
             stdscr.getch()
-            print("HELLO")
         elif key == 27:  # Escape key to exit
             break
 

@@ -2,6 +2,7 @@ from rss_parser import Parser
 from requests import *
 from bs4 import BeautifulSoup
 import hashlib
+from json import dumps
 
 
 class RSS():
@@ -9,33 +10,22 @@ class RSS():
         with open('feeds.lst', 'r') as f:
             lines = f.readlines()
 
-        feeds = [lines.strip() for lines in lines]
+        self.feeds = [lines.strip() for lines in lines]
 
         self.feeds_with_content = []
 
-        for feed in feeds:
+        for feed in self.feeds:
             response = get(feed)
             rss = Parser.parse(response.text)
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
 
-    def list_headlines(self)->None:
-        print("\033c", end='')
-        with open('read_articles.lst', 'r') as f:
-            lines = f.readlines()
-            read_articles = [lines.strip() for lines in lines]
-
-        index = 0
+    def get_headlines(self)->list:
+        headlines = []
         for article in self.feeds_with_content:
-            title = article.title.content
-            hash_object = hashlib.sha256()
-            hash_object.update(title.encode('utf-8'))
-            hashed_title = hash_object.hexdigest()
-            if hashed_title in read_articles:
-                print(f"(R) - {index} - {article.title.content}")
-            else:
-                print(f"{index} - {article.title.content}")
-            index += 1
+            headlines.append(article.title.content)
+        #return dumps(headlines)
+        return headlines
 
     def read_article_description(self, index: int)->None:
         print("\033c", end='')
@@ -60,3 +50,16 @@ class RSS():
         hashed_title = hash_object.hexdigest()
         with open("read_articles.lst","a+") as f:
             f.writelines(hashed_title+"\n")
+
+    def is_read(self, index: int)->bool:
+        title = self.feeds_with_content[index].title.content
+        hash_object = hashlib.sha256()
+        hash_object.update(title.encode('utf-8'))
+        hashed_title = hash_object.hexdigest()
+        with open("read_articles.lst","r") as f:
+            lines = f.readlines()
+            read_articles = [lines.strip() for lines in lines]
+            if hashed_title in read_articles:
+                return True
+            else:
+                return False
