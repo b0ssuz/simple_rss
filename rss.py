@@ -1,4 +1,3 @@
-from constants import *
 from rss_parser import Parser
 from requests import *
 from bs4 import BeautifulSoup
