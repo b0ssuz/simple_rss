@@ -21,6 +21,7 @@ try:
             my_feed.read_article_description(user_input_index)
             user_input_read = input("read full article (y/n): ")
             if user_input_read == "y":
+                    my_feed.mark_as_read(user_input_index)
                     subprocess.call(["w3m",my_feed.get_article_url(user_input_index)])
             else:
                 continue
