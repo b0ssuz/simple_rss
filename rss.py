@@ -16,10 +16,9 @@ class RSS():
         for feed in feeds:
             response = get(feed)
             rss = Parser.parse(response.text)
-            # Iteratively print feed items
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
-        
+
     def list_headlines(self)->None:
         index = 0
         for article in self.feeds_with_content:
@@ -29,7 +28,7 @@ class RSS():
     def read_article_description(self, index: int)->None:
         print(f"\n--- {index} \n{self.feeds_with_content[index].title.content} \n")
         print(f"{self.feeds_with_content[index].description.content} \n")
-    
+
     def get_article_url(self, index: int)->str:
         return self.feeds_with_content[index].link.content
 
