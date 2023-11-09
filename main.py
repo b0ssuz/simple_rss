@@ -60,7 +60,6 @@ def handle_selected_item(stdscr, my_feed, items, selected)->None:
             return
         else:
             return
-    stdscr.refresh()
 
 def main(stdscr):
     my_feed = RSS()
