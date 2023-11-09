@@ -18,10 +18,40 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-import os
-import sys
 import curses
 from rss import RSS
+
+def display_items(stdscr, items, selected, scroll_offset):
+    height, width = stdscr.getmaxyx()
+    num_displayed_items = min(height, len(items))
+
+    # Adjust the selected item if it goes out of the visible region
+    if selected < scroll_offset:
+        scroll_offset = selected
+    elif selected >= scroll_offset + num_displayed_items:
+        scroll_offset = selected - num_displayed_items + 1
+
+    stdscr.clear()
+
+    # Print the list of items within the visible region
+    for i in range(num_displayed_items):
+        item_index = i + scroll_offset
+        if item_index < len(items) and i == selected - scroll_offset:
+            stdscr.addstr(i, 0, f"> {items[item_index]}", curses.A_STANDOUT)
+        elif item_index < len(items):
+            stdscr.addstr(i, 0, f"  {items[item_index]}")
+
+    stdscr.refresh()
+
+def handle_selected_item(stdscr, my_feed, items, selected):
+    height = stdscr.getmaxyx()[0]
+    stdscr.clear()  # Clear the screen
+    my_feed.mark_as_read(selected)
+    stdscr.addstr(0, 0, my_feed.get_description(selected))
+    stdscr.addstr(3, 0, my_feed.get_article_url(selected))
+    stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}, Index: {selected}")
+    stdscr.refresh()
+    stdscr.getch()
 
 def main(stdscr):
     my_feed = RSS()
@@ -29,50 +59,20 @@ def main(stdscr):
     scroll_offset = 0  # Added to keep track of scrolling
 
     while True:
-        height, width = stdscr.getmaxyx()
         items = my_feed.get_headlines(with_read=False)
-        num_displayed_items = min(height, len(items))
 
-        # Adjust the selected item if it goes out of the visible region
-        if selected < scroll_offset:
-            scroll_offset = selected
-        elif selected >= scroll_offset + num_displayed_items:
-            scroll_offset = selected - num_displayed_items + 1
-
-        stdscr.clear()
-
-        # Print the list of items within the visible region
-        for i in range(num_displayed_items):
-            item_index = i + scroll_offset
-            if item_index < len(items) and i == selected - scroll_offset:
-                stdscr.addstr(i, 0, f"> {items[item_index]}", curses.A_STANDOUT)
-            elif item_index < len(items):
-                stdscr.addstr(i, 0, f"  {items[item_index]}")
-
-        stdscr.refresh()
+        display_items(stdscr, items, selected, scroll_offset)
 
         key = stdscr.getch()
-        if key == ord("j") and selected < len(items) - 1:
+
+        if key in [curses.KEY_DOWN, ord("j")] and selected < len(items) - 1:
             selected += 1
-        elif key == ord("k") and selected > 0:
-            selected -= 1
-        elif key == curses.KEY_DOWN and selected < len(items) - 1:
-            selected += 1
-        elif key == curses.KEY_UP and selected > 0:
+        elif key in [curses.KEY_UP, ord("k")] and selected > 0:
             selected -= 1
         elif key == 10:  # Enter key
-            # Handle the selected item
-            stdscr.clear()  # Clear the screen
-            my_feed.mark_as_read(selected)
-            stdscr.addstr(0, 0, my_feed.get_description(selected))
-            stdscr.addstr(3, 0, my_feed.get_article_url(selected))
-            stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}, Index: {selected}")
-            stdscr.refresh()
-            stdscr.getch()
-        elif key == 27 or key == ord("q"):  # Escape key or q to exit
+            handle_selected_item(stdscr, my_feed, items, selected)
+        elif key in [27, ord("q")]:  # Escape key or q to exit
             break
-        else:
-            continue
 
 if __name__ == "__main__":
     curses.wrapper(main)
