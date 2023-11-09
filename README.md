@@ -5,8 +5,8 @@ This program is a simple command-line RSS reader written in Python. It allows yo
 
 ## Dependencies
 - Python 3.x
-- `rss_parser` library (install using `pip install rss_parser`)
-- `requests` library (install using `pip install requests`)
+  
+install dependencies with `pip install -r requirements.txt``
 
 ## Usage
 1. Clone the repository and navigate to the project directory.
