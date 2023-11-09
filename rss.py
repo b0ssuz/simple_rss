@@ -1,6 +1,5 @@
 from rss_parser import Parser
 from requests import *
-from bs4 import BeautifulSoup
 import hashlib
 from json import dumps
 
@@ -33,14 +32,6 @@ class RSS():
 
     def get_article_url(self, index: int)->str:
         return self.feeds_with_content[index].link.content
-
-    def read_full_content_as_html(self, index: int)->str:
-        response = get(self.feeds_with_content[index].link.content)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, 'html.parser')
-            return(soup.prettify())
-        else:
-            return('Error with statuscode:', response.status_code)
 
     def mark_as_read(self, index: int)->None:
         title = self.feeds_with_content[index].title.content
