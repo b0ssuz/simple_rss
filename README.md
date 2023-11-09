@@ -28,7 +28,8 @@ https://feeds.feedburner.com/TheHackersNews
 
 ## Navigation
 - Use the arrow keys (`j` and `k` or Up and Down arrow keys) to navigate through headlines.
-- Press `Enter` to view the selected article's description and URL.
+- Press `Enter` or `l`to view the selected article's description and URL.
+    - Press `Enter` or `l` again to open the article in your browser or any other key to go back to your feeds
 - Press `q` or `Esc` to exit the program.
 
 ## License
