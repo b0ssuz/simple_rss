@@ -18,14 +18,14 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from requests import get
+from requests import get,ConnectionError
 import hashlib
 import os
 from rss_parser import Parser
 
 class RSS:
-    READ_ARTICLES_FILE = "read_articles.lst"
     RSS_FEEDS_FILE = "feeds.lst"
+    READ_ARTICLES_FILE = "read_articles.lst"
 
     def __init__(self) -> None:
         with open(self.RSS_FEEDS_FILE, 'r') as file:
@@ -35,7 +35,10 @@ class RSS:
         self.feeds_with_content = []
 
         for feed in self.feeds:
-            response = get(feed)
+            try:
+                response = get(feed)
+            except ConnectionError:
+                exit("no internet connection")
             rss = Parser.parse(response.text)
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
