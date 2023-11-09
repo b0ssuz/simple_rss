@@ -35,11 +35,22 @@ class RSS:
         self.feeds_with_content = []
 
         for feed in self.feeds:
+            if "FAILED" in feed:
+                continue
             try:
                 response = get(feed)
             except ConnectionError:
                 exit("no internet connection")
-            rss = Parser.parse(response.text)
+            try:
+                rss = Parser.parse(response.text)
+            except:
+                # mark feed as FAILED in file
+                with open(self.RSS_FEEDS_FILE) as f:
+                    newText=f.read().replace(feed, f"{feed} FAILED")
+
+                with open(self.RSS_FEEDS_FILE, "w") as f:
+                    f.write(newText)
+                continue
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
 
