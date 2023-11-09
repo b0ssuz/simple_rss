@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from rss_parser import Parser
 from requests import *
 import hashlib
-from json import dumps
 
 
 class RSS():
