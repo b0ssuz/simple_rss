@@ -48,9 +48,10 @@ def handle_selected_item(stdscr, my_feed, items, selected)->None:
     height = stdscr.getmaxyx()[0]
     stdscr.clear()  # Clear the screen
     my_feed.mark_as_read(selected)
-    stdscr.addstr(0, 0, my_feed.get_description(selected))
-    stdscr.addstr(10, 0, my_feed.get_article_url(selected))
-    stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}, Index: {selected}")
+    stdscr.addstr(0, 0, items[selected])
+    stdscr.addstr(2, 0, my_feed.get_description(selected))
+    stdscr.addstr(12, 0, my_feed.get_article_url(selected))
+    stdscr.addstr(height - 1, 0, f"Press l or enter to open the article or any other key to go back")
     key = stdscr.getch()
 
     while True:
