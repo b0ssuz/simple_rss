@@ -21,6 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from rss_parser import Parser
 from requests import *
 import hashlib
+import os
 
 
 class RSS():
@@ -65,7 +66,12 @@ class RSS():
         hash_object = hashlib.sha256()
         hash_object.update(title.encode('utf-8'))
         hashed_title = hash_object.hexdigest()
-        with open("read_articles.lst","r") as f:
+        read_articles_file = "read_articles.lst"
+        if not os.path.exists(read_articles_file):
+            with open(read_articles_file, 'w+') as f:
+                pass
+
+        with open(read_articles_file,"r") as f:
             lines = f.readlines()
             read_articles = [lines.strip() for lines in lines]
             if hashed_title in read_articles:
