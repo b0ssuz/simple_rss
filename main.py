@@ -21,7 +21,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 from rss import RSS
 import webbrowser
 import subprocess
-import signal
 import sys
 import curses
 
