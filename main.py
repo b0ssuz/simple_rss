@@ -48,7 +48,7 @@ def handle_selected_item(stdscr, my_feed, items, selected):
     stdscr.clear()  # Clear the screen
     my_feed.mark_as_read(selected)
     stdscr.addstr(0, 0, my_feed.get_description(selected))
-    stdscr.addstr(3, 0, my_feed.get_article_url(selected))
+    stdscr.addstr(10, 0, my_feed.get_article_url(selected))
     stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}, Index: {selected}")
     stdscr.refresh()
     stdscr.getch()
