@@ -18,19 +18,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rss_parser import Parser
-from requests import *
+from requests import get
 import hashlib
 import os
+from rss_parser import Parser
 
+class RSS:
+    READ_ARTICLES_FILE = "read_articles.lst"
 
-class RSS():
-    def __init__(self)->None:
-        with open('feeds.lst', 'r') as f:
-            lines = f.readlines()
+    def __init__(self) -> None:
+        with open('feeds.lst', 'r') as file:
+            lines = file.readlines()
 
-        self.feeds = [lines.strip() for lines in lines]
-
+        self.feeds = [line.strip() for line in lines]
         self.feeds_with_content = []
 
         for feed in self.feeds:
@@ -39,42 +39,35 @@ class RSS():
             for item in rss.channel.items:
                 self.feeds_with_content.append(item)
 
-    def get_headlines(self, with_read:bool=True)->list:
+    def get_headlines(self, with_read: bool = True) -> list:
         headlines = []
-        for i,article in enumerate(self.feeds_with_content):
-            if with_read == False and self.is_read(i):
+        for i, article in enumerate(self.feeds_with_content):
+            if not with_read and self.is_read(i):
                 continue
             headlines.append(article.title.content)
         return headlines
 
-    def get_description(self, index: int)->str:
+    def get_description(self, index: int) -> str:
         return self.feeds_with_content[index].description.content
 
-    def get_article_url(self, index: int)->str:
+    def get_article_url(self, index: int) -> str:
         return self.feeds_with_content[index].link.content
 
-    def mark_as_read(self, index: int)->None:
+    def mark_as_read(self, index: int) -> None:
         title = self.feeds_with_content[index].title.content
-        hash_object = hashlib.sha256()
-        hash_object.update(title.encode('utf-8'))
-        hashed_title = hash_object.hexdigest()
-        with open("read_articles.lst","a+") as f:
-            f.writelines(hashed_title+"\n")
+        hashed_title = hashlib.sha256(title.encode('utf-8')).hexdigest()
+        with open(self.READ_ARTICLES_FILE, "a+") as file:
+            file.writelines(hashed_title + "\n")
 
-    def is_read(self, index: int)->bool:
+    def is_read(self, index: int) -> bool:
         title = self.feeds_with_content[index].title.content
-        hash_object = hashlib.sha256()
-        hash_object.update(title.encode('utf-8'))
-        hashed_title = hash_object.hexdigest()
-        read_articles_file = "read_articles.lst"
-        if not os.path.exists(read_articles_file):
-            with open(read_articles_file, 'w+') as f:
+        hashed_title = hashlib.sha256(title.encode('utf-8')).hexdigest()
+
+        if not os.path.exists(self.READ_ARTICLES_FILE):
+            with open(self.READ_ARTICLES_FILE, 'w+'):
                 pass
 
-        with open(read_articles_file,"r") as f:
-            lines = f.readlines()
-            read_articles = [lines.strip() for lines in lines]
-            if hashed_title in read_articles:
-                return True
-            else:
-                return False
+        with open(self.READ_ARTICLES_FILE, "r") as file:
+            lines = file.readlines()
+            read_articles = [line.strip() for line in lines]
+            return hashed_title in read_articles

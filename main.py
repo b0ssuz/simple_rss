@@ -18,24 +18,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
-from rss import RSS
+import os
 import sys
 import curses
+from rss import RSS
 
 def main(stdscr):
     my_feed = RSS()
     selected = 0
     scroll_offset = 0  # Added to keep track of scrolling
+
     while True:
         height, width = stdscr.getmaxyx()
         items = my_feed.get_headlines(with_read=False)
         num_displayed_items = min(height, len(items))
+
         # Adjust the selected item if it goes out of the visible region
         if selected < scroll_offset:
             scroll_offset = selected
         elif selected >= scroll_offset + num_displayed_items:
             scroll_offset = selected - num_displayed_items + 1
+
         stdscr.clear()
+
         # Print the list of items within the visible region
         for i in range(num_displayed_items):
             item_index = i + scroll_offset
@@ -43,7 +48,9 @@ def main(stdscr):
                 stdscr.addstr(i, 0, f"> {items[item_index]}", curses.A_STANDOUT)
             elif item_index < len(items):
                 stdscr.addstr(i, 0, f"  {items[item_index]}")
+
         stdscr.refresh()
+
         key = stdscr.getch()
         if key == ord("j") and selected < len(items) - 1:
             selected += 1
@@ -54,7 +61,7 @@ def main(stdscr):
         elif key == curses.KEY_UP and selected > 0:
             selected -= 1
         elif key == 10:  # Enter key
-           # Handle the selected item
+            # Handle the selected item
             stdscr.clear()  # Clear the screen
             my_feed.mark_as_read(selected)
             stdscr.addstr(0, 0, my_feed.get_description(selected))
@@ -69,3 +76,4 @@ def main(stdscr):
 
 if __name__ == "__main__":
     curses.wrapper(main)
+
