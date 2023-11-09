@@ -25,9 +25,10 @@ from rss_parser import Parser
 
 class RSS:
     READ_ARTICLES_FILE = "read_articles.lst"
+    RSS_FEEDS_FILE = "feeds.lst"
 
     def __init__(self) -> None:
-        with open('feeds.lst', 'r') as file:
+        with open(self.RSS_FEEDS_FILE, 'r') as file:
             lines = file.readlines()
 
         self.feeds = [line.strip() for line in lines]
