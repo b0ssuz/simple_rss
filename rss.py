@@ -28,6 +28,9 @@ class RSS:
     READ_ARTICLES_FILE = "read_articles.lst"
 
     def __init__(self) -> None:
+        self.load_feeds()
+
+    def load_feeds(self):
         with open(self.RSS_FEEDS_FILE, 'r') as file:
             lines = file.readlines()
 
@@ -39,11 +42,10 @@ class RSS:
                 continue
             try:
                 response = get(feed)
+                rss = Parser.parse(response.text)
             except ConnectionError:
                 exit("no internet connection")
-            try:
-                rss = Parser.parse(response.text)
-            except:
+            except Exception:
                 # mark feed as FAILED in file
                 with open(self.RSS_FEEDS_FILE) as f:
                     newText=f.read().replace(feed, f"{feed} FAILED")
