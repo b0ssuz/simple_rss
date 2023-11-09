@@ -1,3 +1,23 @@
+'''
+GNU GENERAL PUBLIC LICENSE
+Version 3, 29 June 2007
+
+Copyright (C) 2023 Bünyamin Sarikaya
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
+
 from rss import RSS
 import webbrowser
 import subprocess
@@ -10,7 +30,6 @@ def main(stdscr):
     selected = 0
     scroll_offset = 0  # Added to keep track of scrolling
     while True:
-        stdscr.refresh()
         height, width = stdscr.getmaxyx()
         items = my_feed.get_headlines(with_read=False)
         num_displayed_items = min(height, len(items))
@@ -39,7 +58,7 @@ def main(stdscr):
         elif key == curses.KEY_UP and selected > 0:
             selected -= 1
         elif key == 10:  # Enter key
-           # Handle the selected item 
+           # Handle the selected item
             stdscr.clear()  # Clear the screen
             my_feed.mark_as_read(selected)
             stdscr.addstr(0, 0, my_feed.get_description(selected))
