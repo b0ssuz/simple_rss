@@ -39,12 +39,10 @@ def main(stdscr):
         # Print the list of items within the visible region
         for i in range(num_displayed_items):
             item_index = i + scroll_offset
-            if item_index < len(items):
-                item = items[item_index]
-                if i == selected - scroll_offset:
-                    stdscr.addstr(i, 0, f"> {item}", curses.A_STANDOUT)
-                else:
-                    stdscr.addstr(i, 0, f"  {item}")
+            if item_index < len(items) and i == selected - scroll_offset:
+                stdscr.addstr(i, 0, f"> {items[item_index]}", curses.A_STANDOUT)
+            elif item_index < len(items):
+                stdscr.addstr(i, 0, f"  {items[item_index]}")
         stdscr.refresh()
         key = stdscr.getch()
         if key == ord("j") and selected < len(items) - 1:
