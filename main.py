@@ -19,9 +19,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 '''
 
 import curses
+import webbrowser
 from rss import RSS
 
-def display_items(stdscr, items, selected, scroll_offset):
+def display_items(stdscr, items, selected, scroll_offset)->None:
     height, width = stdscr.getmaxyx()
     num_displayed_items = min(height, len(items))
 
@@ -43,15 +44,22 @@ def display_items(stdscr, items, selected, scroll_offset):
 
     stdscr.refresh()
 
-def handle_selected_item(stdscr, my_feed, items, selected):
+def handle_selected_item(stdscr, my_feed, items, selected)->None:
     height = stdscr.getmaxyx()[0]
     stdscr.clear()  # Clear the screen
     my_feed.mark_as_read(selected)
     stdscr.addstr(0, 0, my_feed.get_description(selected))
     stdscr.addstr(10, 0, my_feed.get_article_url(selected))
     stdscr.addstr(height - 1, 0, f"Selected: {items[selected]}, Index: {selected}")
+    key = stdscr.getch()
+
+    while True:
+        if key in [10, ord("l")]:  # Enter or l key to select
+            webbrowser.open(my_feed.get_article_url(selected))
+            return
+        else:
+            return
     stdscr.refresh()
-    stdscr.getch()
 
 def main(stdscr):
     my_feed = RSS()
