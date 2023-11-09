@@ -69,7 +69,7 @@ def main(stdscr):
             selected += 1
         elif key in [curses.KEY_UP, ord("k")] and selected > 0:
             selected -= 1
-        elif key == 10:  # Enter key
+        elif key in [10, ord("l")]:  # Enter or l key to select
             handle_selected_item(stdscr, my_feed, items, selected)
         elif key in [27, ord("q")]:  # Escape key or q to exit
             break
