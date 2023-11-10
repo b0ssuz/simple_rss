@@ -55,7 +55,7 @@ class SimpleRSS:
         stdscr.addstr(0, 0, self.items[self.selected])
         stdscr.addstr(2, 0, self.my_feed.get_description(self.selected))
         stdscr.addstr(12, 0, self.my_feed.get_article_url(self.selected))
-        stdscr.addstr(height - 1, 0, "Press l or enter to open the article or any other key to go back")
+        stdscr.addstr(height - 1, 0, "Press 'l' or Enter to open the article or any other key to go back")
         key = stdscr.getch()
 
         while True:
@@ -65,6 +65,17 @@ class SimpleRSS:
             else:
                 return
 
+    def handle_key_press(self, stdscr, key):
+        if key in [curses.KEY_DOWN, ord("j")] and self.selected < len(self.items) - 1:
+            self.selected += 1
+        elif key in [curses.KEY_UP, ord("k")] and self.selected > 0:
+            self.selected -= 1
+        elif key in [10, ord("l")]:
+            self.handle_selected_item(stdscr)
+        elif key in [27, ord("q")]:
+            return True  # Signal to exit the loop
+        return False
+
     def run(self, stdscr):
         while True:
             self.items = self.my_feed.get_headlines(with_read=False)
@@ -73,15 +84,8 @@ class SimpleRSS:
 
             key = stdscr.getch()
 
-            if key in [curses.KEY_DOWN, ord("j")] and self.selected < len(self.items) - 1:
-                self.selected += 1
-            elif key in [curses.KEY_UP, ord("k")] and self.selected > 0:
-                self.selected -= 1
-            elif key in [10, ord("l")]:
-                self.handle_selected_item(stdscr)
-            elif key in [27, ord("q")]:
+            if self.handle_key_press(stdscr, key):
                 break
 
 if __name__ == "__main__":
     curses.wrapper(SimpleRSS().run)
-
