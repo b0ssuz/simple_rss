@@ -24,11 +24,28 @@ from rss import RSS
 
 class SimpleRSS:
     def __init__(self):
+        """
+        Initializes the SimpleRSS object.
+
+        Attributes:
+        - my_feed: An instance of the RSS class, representing the RSS feed.
+        - selected: Index of the currently selected item in the feed.
+        - scroll_offset: Offset used for scrolling through the feed items.
+        """
         self.my_feed = RSS()
         self.selected = 0
         self.scroll_offset = 0
 
     def display_items(self, stdscr):
+        """
+        Displays the RSS feed items on the terminal screen.
+
+        Parameters:
+        - stdscr: The curses standard screen object.
+
+        This method calculates the number of items to display based on the terminal height,
+        handles scrolling, and highlights the selected item.
+        """
         height, width = stdscr.getmaxyx()
         num_displayed_items = min(height, len(self.items))
 
@@ -49,6 +66,14 @@ class SimpleRSS:
         stdscr.refresh()
 
     def handle_selected_item(self, stdscr):
+        """
+        Handles the selection of an RSS feed item, marking it as read and displaying details.
+
+        Parameters:
+        - stdscr: The curses standard screen object.
+
+        Displays the item title, description, and URL. Opens the article in a web browser if 'l' or Enter is pressed.
+        """
         height = stdscr.getmaxyx()[0]
         stdscr.clear()
         self.my_feed.mark_as_read(self.selected)
@@ -57,11 +82,21 @@ class SimpleRSS:
         stdscr.addstr(12, 0, self.my_feed.get_article_url(self.selected))
         stdscr.addstr(height - 1, 0, "Press 'l' or Enter to open the article or any other key to go back")
         key = stdscr.getch()
-        
+
         if key in [10, ord("l")]:
             webbrowser.open(self.my_feed.get_article_url(self.selected))
 
     def handle_key_press(self, stdscr, key):
+        """
+        Handles key presses during the main loop of the application.
+
+        Parameters:
+        - stdscr: The curses standard screen object.
+        - key: The key code of the pressed key.
+
+        Returns:
+        - True if the key press signals to exit the loop, otherwise False.
+        """
         if key in [curses.KEY_DOWN, ord("j")] and self.selected < len(self.items) - 1:
             self.selected += 1
         elif key in [curses.KEY_UP, ord("k")] and self.selected > 0:
@@ -73,6 +108,15 @@ class SimpleRSS:
         return False
 
     def run(self, stdscr):
+        """
+        Runs the main loop of the SimpleRSS application.
+
+        Parameters:
+        - stdscr: The curses standard screen object.
+
+        This method continuously updates and displays the RSS feed items, handling key presses
+        until a key press signals to exit the loop.
+        """
         while True:
             self.items = self.my_feed.get_headlines(with_read=False)
 
@@ -84,4 +128,5 @@ class SimpleRSS:
                 break
 
 if __name__ == "__main__":
+    # Run the SimpleRSS application using curses.wrapper
     curses.wrapper(SimpleRSS().run)
