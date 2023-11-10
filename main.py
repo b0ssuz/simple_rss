@@ -57,13 +57,9 @@ class SimpleRSS:
         stdscr.addstr(12, 0, self.my_feed.get_article_url(self.selected))
         stdscr.addstr(height - 1, 0, "Press 'l' or Enter to open the article or any other key to go back")
         key = stdscr.getch()
-
-        while True:
-            if key in [10, ord("l")]:
-                webbrowser.open(self.my_feed.get_article_url(self.selected))
-                return
-            else:
-                return
+        
+        if key in [10, ord("l")]:
+            webbrowser.open(self.my_feed.get_article_url(self.selected))
 
     def handle_key_press(self, stdscr, key):
         if key in [curses.KEY_DOWN, ord("j")] and self.selected < len(self.items) - 1:
