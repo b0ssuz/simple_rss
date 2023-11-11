@@ -44,7 +44,7 @@ class RSS:
 
     """
     RSS_FEEDS_FILE = "feeds.lst"
-    READ_ARTICLES_FILE = "read_articles.lst"
+    READ_ARTICLES_FILE = ".read_articles.lst"
 
     def __init__(self) -> None:
         """
@@ -95,6 +95,7 @@ class RSS:
         headlines = []
         for i, article in enumerate(self.feeds_with_content):
             if not with_read and self.is_read(i):
+                del self.feeds_with_content[i]
                 continue
             headlines.append(article.title.content)
         return headlines

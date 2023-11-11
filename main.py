@@ -31,10 +31,12 @@ class SimpleRSS:
         - my_feed: An instance of the RSS class, representing the RSS feed.
         - selected: Index of the currently selected item in the feed.
         - scroll_offset: Offset used for scrolling through the feed items.
+        - list_read_articles: Determines if read articles ar listed or not
         """
         self.my_feed = RSS()
         self.selected = 0
         self.scroll_offset = 0
+        self.list_read_articles = False
 
     def display_items(self, stdscr):
         """
@@ -55,6 +57,14 @@ class SimpleRSS:
             self.scroll_offset = self.selected - num_displayed_items + 1
 
         stdscr.clear()
+
+        if num_displayed_items == 0:
+            stdscr.addstr(0, 0, f"> Nothing left here.. press q to quit or b to browse read articles", curses.A_STANDOUT)
+            # wait until closed
+            while True:
+                key = stdscr.getch()
+                if key in [ord('q'), 27]:
+                    exit(0)
 
         for i in range(num_displayed_items):
             item_index = i + self.scroll_offset
@@ -118,7 +128,7 @@ class SimpleRSS:
         until a key press signals to exit the loop.
         """
         while True:
-            self.items = self.my_feed.get_headlines(with_read=False)
+            self.items = self.my_feed.get_headlines(with_read=self.list_read_articles)
 
             self.display_items(stdscr)
 
