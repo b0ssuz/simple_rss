@@ -22,7 +22,7 @@ We've added a web interface to make the RSS reading experience even more conveni
    ```
 3. To use the web UI, run the Flask app using the command:
    ```bash
-   python flask_app.py
+   python webui.py
    ```
    Open your browser and navigate to `http://localhost:5000` to access the web interface.
 
