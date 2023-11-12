@@ -18,7 +18,7 @@ We've added a web interface to make the RSS reading experience even more conveni
 1. Clone the repository and navigate to the project directory.
 2. Run the command-line version of the program using the following command:
    ```bash
-   python main.py
+   python simple_rss.py
    ```
 3. To use the web UI, run the Flask app using the command:
    ```bash
